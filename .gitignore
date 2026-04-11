@@ -137,3 +137,18 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Cloudflare Workers
+.wrangler/
+.dev.vars
+.dev.vars.*
+worker-configuration.d.ts
+
+# pnpm
+.pnpm-store/
+
+# claude
+.claude/
+
+# Local design/planning notes
+docs/   

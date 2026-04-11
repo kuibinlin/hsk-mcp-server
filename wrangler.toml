@@ -1,0 +1,46 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "hsk-mcp"
+main = "src/index.ts"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Observability (Workers Logs) — free tier
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+# Public env vars (not secrets). DATASET_VERSION filled at build time from upstream commit SHA.
+[vars]
+DATASET_VERSION = "unpinned"
+ENVIRONMENT = "development"
+
+# D1 database binding — created via `pnpm exec wrangler d1 create hsk_db`, paste ID below.
+[[d1_databases]]
+binding = "DB"
+database_name = "hsk_db"
+database_id = "318c6eb4-6aca-4758-b28d-c2b1729ad06a"
+
+# KV namespace for the daily per-IP rate-limit cap (defense-in-depth).
+# [[ratelimits]] binding is the primary per-minute enforcement; added when middleware lands.
+[[kv_namespaces]]
+binding = "RL_KV"
+id = "c66f958476ca47dd9a52b664e51d1769"
+
+# Custom domain — bound on first deploy to production environment.
+# Staging uses the default *.workers.dev URL.
+[env.production]
+name = "hsk-mcp"
+vars = { ENVIRONMENT = "production", DATASET_VERSION = "unpinned" }
+
+[[env.production.routes]]
+pattern = "hsk-mcp.linsnotes.com"
+custom_domain = true
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "hsk_db"
+database_id = "318c6eb4-6aca-4758-b28d-c2b1729ad06a"
+
+[[env.production.kv_namespaces]]
+binding = "RL_KV"
+id = "c66f958476ca47dd9a52b664e51d1769"
