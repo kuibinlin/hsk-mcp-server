@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
+  },
+  "include": ["scripts/**/*.ts", "src/schemas/**/*.ts", "src/pinyin.ts"],
+  "exclude": ["node_modules", ".wrangler", "dist"]
+}

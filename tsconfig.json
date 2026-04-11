@@ -25,6 +25,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts", "test/**/*.ts", "worker-configuration.d.ts"],
-  "exclude": ["node_modules", ".wrangler", "dist"]
+  "include": ["src/**/*.ts", "test/**/*.ts", "worker-configuration.d.ts"],
+  "exclude": ["node_modules", ".wrangler", "dist", "scripts"]
 }

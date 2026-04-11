@@ -152,3 +152,6 @@ worker-configuration.d.ts
 
 # Local design/planning notes
 docs/
+
+# Generated D1 seed (regenerable via `pnpm build-seed`)                                                
+sql/seed.sql

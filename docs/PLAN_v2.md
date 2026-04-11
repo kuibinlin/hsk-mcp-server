@@ -61,7 +61,10 @@ This decision lets:
 - `homophone_drill("yi")` and `search_by_pinyin("nihao")` hit `pinyin_fts` (trigram; `"nihao"` matches `"ayi"`? no — but `"nihao"` matches `"nihaoma"`, and **crucially** the lack-of-space form is queryable directly. For typed-with-spaces input like `"ni hao"` we strip spaces before querying).
 - `lookup_hsk_word("阿姨")` go through the `simplified` UNIQUE index first, falling back to `hanzi_fts` for substring/partial queries.
 
-**Phase 0 spike S0.4 verifies trigram tokenizer availability.** If missing, fall back to a bigram shadow column built at seed time (character-pair concatenation) using default unicode61.
+**Phase 0 spike S0.4** ✅ **Done 2026-04-11:** trigram tokenizer is available on D1; `CREATE VIRTUAL TABLE t USING fts5(x, tokenize='trigram')` succeeds and `MATCH 'nihao'` against `'nihao'` / `'nihaoma'` returns both. No bigram fallback needed. **Constraint found:** FTS5 trigram requires query strings of **≥3 characters** — any 2-char query (`'yi'`, `'阿姨'`, `'你好'`) returns empty from the trigram FTS regardless of stored content. Implementation consequence for Phase 1:
+- `lookup_hsk_word("阿姨")` uses the `forms.simplified` / `forms.traditional` indexed columns (already planned).
+- `homophone_drill("yi")` cannot use `pinyin_fts` trigram for ≤2-char pinyin — it must hit an index on `pinyin_plain` with boundary-anchored matching: `pinyin_plain = ?` OR `LIKE ? || ' %'` OR `LIKE '% ' || ?` OR `LIKE '% ' || ? || ' %'`. The tool splits the query path on query length.
+- `search_by_pinyin("ni hao")` strips whitespace to `"nihao"` (5 chars) before hitting `pinyin_fts`.
 
 **5. Polyphone representation: one row per `form`, grouped by `headword_id`, identified externally by a stable hash key.**
 
@@ -383,7 +386,7 @@ CREATE VIRTUAL TABLE hanzi_fts USING fts5(
 ### Seed script (`scripts/build-seed.ts`) — shape
 
 1. Parse `complete.json`.
-2. Assert invariants (matches `verify-dataset.ts` counts: 11470 headwords, ~12092 forms, 622 polyphones, 93 sentinels).
+2. Assert invariants (confirmed 2026-04-11 at SHA `7ac65bf1…c7f9`): 11,470 headwords, 12,623 forms, 879 headwords with multiple forms (any variant), 622 true polyphones (≥2 distinct pinyin pronunciations), 93 frequency sentinels (= 1,000,000), 238 radicals, 36 POS tags, max 8 forms per headword, zero `form_key = sha256(simp|trad|pinyin)[:12]` collisions across all 12,623 forms.
 3. Emit DDL from `schema.sql`.
 4. For each headword: compute `new_level`/`old_level` from `level[]`, compute `frequency_rank` (null if sentinel), emit `INSERT INTO headwords`.
 5. For each form of each headword: compute `pinyin_plain`, `pinyin_concat`, `gloss_en`, `hanzi_concat`, `form_key`, emit `INSERT INTO forms`.
