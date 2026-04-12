@@ -136,6 +136,99 @@ export async function headwordsByLevel(
   return results;
 }
 
+// ── Level queries with pagination ────────────────────────────────────
+
+export async function headwordsByLevelPaged(
+  db: D1Database,
+  scheme: "new" | "old",
+  level: number,
+  limit: number,
+  offset: number,
+): Promise<HeadwordRow[]> {
+  const col = scheme === "new" ? "new_level" : "old_level";
+  const { results } = await db
+    .prepare(`SELECT * FROM headwords WHERE ${col} = ? ORDER BY ${FREQ_ORDER} LIMIT ? OFFSET ?`)
+    .bind(level, limit, offset)
+    .all<HeadwordRow>();
+  return results;
+}
+
+export async function suggestWords(
+  db: D1Database,
+  scheme: "new" | "old",
+  level: number,
+  excludeSimplified: string[],
+  limit: number,
+  offset: number,
+): Promise<HeadwordRow[]> {
+  const col = scheme === "new" ? "new_level" : "old_level";
+  if (excludeSimplified.length === 0) {
+    const { results } = await db
+      .prepare(`SELECT * FROM headwords WHERE ${col} = ? ORDER BY ${FREQ_ORDER} LIMIT ? OFFSET ?`)
+      .bind(level, limit, offset)
+      .all<HeadwordRow>();
+    return results;
+  }
+  const ph = excludeSimplified.map(() => "?").join(",");
+  const { results } = await db
+    .prepare(
+      `SELECT * FROM headwords WHERE ${col} = ? AND simplified NOT IN (${ph})
+       ORDER BY ${FREQ_ORDER} LIMIT ? OFFSET ?`,
+    )
+    .bind(level, ...excludeSimplified, limit, offset)
+    .all<HeadwordRow>();
+  return results;
+}
+
+// ── Pinyin lookups (short-string safe) ──────────────────────────────
+
+/** Exact match on pinyin_plain (space-separated syllables). */
+export async function formsByPinyinPlain(
+  db: D1Database,
+  pinyinPlain: string,
+  limit: number,
+  offset: number,
+): Promise<FormRow[]> {
+  const { results } = await db
+    .prepare(
+      `SELECT * FROM forms WHERE pinyin_plain = ?
+       OR pinyin_plain LIKE ? || ' %'
+       OR pinyin_plain LIKE '% ' || ?
+       OR pinyin_plain LIKE '% ' || ? || ' %'
+       ORDER BY headword_id LIMIT ? OFFSET ?`,
+    )
+    .bind(pinyinPlain, pinyinPlain, pinyinPlain, pinyinPlain, limit, offset)
+    .all<FormRow>();
+  return results;
+}
+
+// ── Multiple headword lookup by simplified ──────────────────────────
+
+export async function headwordsBySimplifiedList(
+  db: D1Database,
+  words: string[],
+): Promise<HeadwordRow[]> {
+  if (words.length === 0) return [];
+  const ph = words.map(() => "?").join(",");
+  const { results } = await db
+    .prepare(`SELECT * FROM headwords WHERE simplified IN (${ph})`)
+    .bind(...words)
+    .all<HeadwordRow>();
+  return results;
+}
+
+// ── Aggregate counts ────────────────────────────────────────────────
+
+export async function countHeadwords(db: D1Database): Promise<number> {
+  const row = await db.prepare("SELECT count(*) AS cnt FROM headwords").first<{ cnt: number }>();
+  return row?.cnt ?? 0;
+}
+
+export async function countForms(db: D1Database): Promise<number> {
+  const row = await db.prepare("SELECT count(*) AS cnt FROM forms").first<{ cnt: number }>();
+  return row?.cnt ?? 0;
+}
+
 // ── Polyphones ───────────────────────────────────────────────────────
 
 export async function polyphoneHeadwords(

@@ -1,5 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createMcpHandler } from "agents/mcp";
+import { registerLevelLists } from "./resources/levelLists.js";
+import { registerMeta } from "./resources/meta.js";
 import { setDatasetVersion } from "./response.js";
 import { registerTools } from "./tools/index.js";
 import type { Env } from "./types.js";
@@ -15,6 +17,8 @@ function buildServer(env: Env): McpServer {
   );
 
   registerTools(server, env.DB, env.CURSOR_SECRET ?? DEV_CURSOR_SECRET);
+  registerMeta(server, env.DB, env);
+  registerLevelLists(server, env.DB);
 
   return server;
 }
