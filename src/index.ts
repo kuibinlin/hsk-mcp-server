@@ -1,8 +1,8 @@
-import { handleMcp } from "./mcp";
-import { corsPreflight, withCors } from "./middleware/cors";
-import { withErrorWrap } from "./middleware/errorWrap";
-import { checkRateLimit } from "./middleware/rateLimit";
-import type { Env } from "./types";
+import { handleMcp } from "./mcp.js";
+import { corsPreflight, withCors } from "./middleware/cors.js";
+import { withErrorWrap } from "./middleware/errorWrap.js";
+import { checkRateLimit } from "./middleware/rateLimit.js";
+import type { Env } from "./types.js";
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
