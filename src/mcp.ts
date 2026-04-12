@@ -1,46 +1,26 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createMcpHandler } from "agents/mcp";
-import { z } from "zod";
+import { setDatasetVersion } from "./response.js";
+import { registerTools } from "./tools/index.js";
+import type { Env } from "./types.js";
 
-function buildServer(): McpServer {
+const DEV_CURSOR_SECRET = "hsk-mcp-dev-cursor-key";
+
+function buildServer(env: Env): McpServer {
+  setDatasetVersion(env.DATASET_VERSION);
+
   const server = new McpServer(
     { name: "hsk-mcp", version: "0.1.0" },
     { capabilities: { tools: {}, resources: {} } },
   );
 
-  server.registerTool(
-    "hsk_ping",
-    {
-      title: "HSK ping",
-      description:
-        "Phase 0 smoke-test tool. Returns 'pong' plus the server's dataset version. " +
-        "Use this to verify the MCP connection is live.",
-      inputSchema: {},
-      outputSchema: {
-        message: z.string(),
-        dataset_version: z.string(),
-      },
-    },
-    async () => {
-      const payload = {
-        message: "pong",
-        dataset_version: "unpinned",
-      };
-      return {
-        content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
-        structuredContent: payload,
-      };
-    },
-  );
+  registerTools(server, env.DB, env.CURSOR_SECRET ?? DEV_CURSOR_SECRET);
 
   return server;
 }
 
-export function handleMcp(
-  request: Request,
-  env: unknown,
-  ctx: ExecutionContext,
-): Promise<Response> {
-  const handler = createMcpHandler(buildServer(), { route: "/mcp" });
+export function handleMcp(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  // Fresh server + handler per request — reuse triggers "already connected" error.
+  const handler = createMcpHandler(buildServer(env), { route: "/mcp" });
   return handler(request, env, ctx);
 }

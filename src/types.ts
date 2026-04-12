@@ -3,4 +3,5 @@ export interface Env {
   RL_KV: KVNamespace;
   DATASET_VERSION: string;
   ENVIRONMENT: string;
+  CURSOR_SECRET?: string;
 }

@@ -1,5 +1,6 @@
 import { handleMcp } from "./mcp";
 import { corsPreflight, withCors } from "./middleware/cors";
+import { withErrorWrap } from "./middleware/errorWrap";
 import type { Env } from "./types";
 
 export default {
@@ -36,7 +37,8 @@ export default {
     }
 
     if (url.pathname === "/mcp" || url.pathname.startsWith("/mcp/")) {
-      const response = await handleMcp(request, env, ctx);
+      const safeMcp = withErrorWrap((req) => handleMcp(req, env, ctx));
+      const response = await safeMcp(request);
       return withCors(response);
     }
 
