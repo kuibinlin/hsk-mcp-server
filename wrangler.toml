@@ -11,7 +11,7 @@ head_sampling_rate = 1.0
 
 # Public env vars (not secrets). DATASET_VERSION filled at build time from upstream commit SHA.
 [vars]
-DATASET_VERSION = "unpinned"
+DATASET_VERSION = "2026-04-11"
 ENVIRONMENT = "development"
 
 # D1 database binding — created via `pnpm exec wrangler d1 create hsk_db`, paste ID below.
@@ -30,7 +30,7 @@ id = "c66f958476ca47dd9a52b664e51d1769"
 # Staging uses the default *.workers.dev URL.
 [env.production]
 name = "hsk-mcp"
-vars = { ENVIRONMENT = "production", DATASET_VERSION = "unpinned" }
+vars = { ENVIRONMENT = "production", DATASET_VERSION = "2026-04-11" }
 
 [[env.production.routes]]
 pattern = "hsk-mcp.linsnotes.com"

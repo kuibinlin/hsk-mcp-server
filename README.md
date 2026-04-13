@@ -143,7 +143,7 @@ Each word entry includes:
 - **Part of speech** tags
 - **Multiple pronunciation forms** for polyphones (e.g. 好 = hǎo / hào)
 
-Dataset: [drkameleon/complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) (MIT), pinned at commit `7ac65bf1`.
+Dataset: [drkameleon/complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) (MIT).
 
 ## How it works
 
@@ -175,10 +175,48 @@ MCP Client (Claude, Cursor, etc.)
 4. The tool queries Cloudflare D1 (SQLite at the edge) using prepared statements
 5. Results are shaped into a clean JSON response with dataset version metadata
 
-Full-text search uses three FTS5 indexes:
-- **English meanings** — `unicode61` tokenizer for natural language search
-- **Pinyin** — `trigram` tokenizer so "nihao" matches without spaces or tones
-- **Hanzi** — `trigram` tokenizer for character substring matching
+## Database design
+
+### Tables
+
+The database has two core tables and three search indexes:
+
+**`headwords`** — one row per word (11,470 rows). Holds properties of the word itself: simplified characters (unique key), radical, frequency rank, HSK levels, parts of speech. These don't change across pronunciations.
+
+**`forms`** — one row per pronunciation (12,623 rows). A word can have multiple pronunciations (polyphones) — e.g. 好 has hǎo (good) and hào (to like). Each gets its own row with all 5 transcription systems, English meanings, and classifiers. Linked to headwords via `headword_id`.
+
+### Full-text search (FTS5)
+
+Regular SQL only supports exact matches (`WHERE col = 'aunt'`) or slow full-table scans (`WHERE col LIKE '%aunt%'`). [FTS5](https://www.sqlite.org/fts5.html) is SQLite's full-text search engine — it builds a specialized index for fast, accurate text search.
+
+Three FTS5 virtual tables are needed because each searches a different kind of text with a different strategy. FTS5 only allows one tokenizer per table, so they can't be combined.
+
+**`gloss_fts`** — English meaning search, `unicode61` tokenizer (word-boundary aware)
+
+Searching `MATCH 'aunt'` correctly matches "maternal **aunt**" but not "r**aunt**ed". This powers `hsk_search_meaning`. The source column is `gloss_en` on `forms` — all meanings joined into a single flat string (`"maternal aunt | step-mother | childcare worker"`). FTS5 needs a single text column, not a JSON array, so `gloss_en` exists alongside `meanings_json` which holds the structured data for responses.
+
+**`pinyin_fts`** — pinyin search, `trigram` tokenizer (substring matching)
+
+Trigram indexes every 3-character window, so `MATCH 'nihao'` matches both `"nihao"` and `"nihaoma"`. The source column is `pinyin_concat` — pinyin with tones stripped and spaces removed (e.g. `"ayi"` not `"ā yí"`). This way searching `"ayi"` matches regardless of whether the user types spaces or tones. Note: trigram requires queries of 3+ characters — shorter queries (like `"yi"`) fall back to an indexed `WHERE pinyin_plain = ?` query in the application layer.
+
+**`hanzi_fts`** — character search, `trigram` tokenizer
+
+Same approach as pinyin. The source column is `hanzi_concat` — simplified and traditional concatenated with a space (e.g. `"阿姨 阿姨"`). One search matches both scripts.
+
+### Why concat columns exist
+
+The `forms` table has several columns that look redundant but serve different roles:
+
+| Column | Example | Purpose |
+|--------|---------|---------|
+| `pinyin` | `ā yí` | Display — returned in responses |
+| `pinyin_plain` | `a yi` | Indexed exact match — for short pinyin queries |
+| `pinyin_concat` | `ayi` | FTS trigram source — space-free for substring search |
+| `meanings_json` | `["maternal aunt",...]` | Display — structured array for responses |
+| `gloss_en` | `maternal aunt \| ...` | FTS unicode61 source — flat text for word search |
+| `hanzi_concat` | `阿姨 阿姨` | FTS trigram source — simplified + traditional together |
+
+FTS tables store their own copy of the indexed text alongside the search index. The actual structured data (meanings array, full pinyin, etc.) stays in `forms`; FTS queries JOIN back via `rowid`.
 
 ## Tech stack
 
@@ -244,10 +282,18 @@ scripts/
   verify-dataset.ts     # Dataset invariant checks
 ```
 
+### Dataset integrity
+
+`scripts/verify-dataset.ts` contains a hardcoded SHA-256 hash of `complete.json`. When `pnpm verify-dataset` runs, it hashes the file again and compares — if someone accidentally modifies or replaces the file, the check fails. You can verify the hash yourself:
+
+```bash
+shasum -a 256 complete.json
+```
+
 ## License
 
 MIT
 
 ## Attribution
 
-Dataset: [drkameleon/complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) by drkameleon, licensed under MIT. Pinned at commit [`7ac65bf1`](https://github.com/drkameleon/complete-hsk-vocabulary/tree/7ac65bf1a6387d35f1ade478906172a19311c7f9).
+Dataset: [drkameleon/complete-hsk-vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) by drkameleon, licensed under MIT.

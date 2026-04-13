@@ -8,10 +8,7 @@ export function registerMeta(server: McpServer, db: D1Database, env: Env): void 
     "hsk://meta",
     { description: "Server metadata: dataset version, tool count, and vocabulary statistics." },
     async () => {
-      const [headwordCount, formCount] = await Promise.all([
-        countHeadwords(db),
-        countForms(db),
-      ]);
+      const [headwordCount, formCount] = await Promise.all([countHeadwords(db), countForms(db)]);
 
       const data = {
         dataset_version: env.DATASET_VERSION,

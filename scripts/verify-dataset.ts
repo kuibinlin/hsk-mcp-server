@@ -5,8 +5,7 @@ import { type RawHskDataset, RawHskDatasetSchema } from "../src/schemas/rawHsk.j
 
 const DATASET_PATH = resolve(process.cwd(), "complete.json");
 
-const PINNED_COMMIT = "7ac65bf1a6387d35f1ade478906172a19311c7f9";
-const PINNED_SHA256 = "8568093e1bb55c990a43615be4bd49cdf0f581e127fa580bb8d9c057502c98b4";
+const EXPECTED_SHA256 = "8568093e1bb55c990a43615be4bd49cdf0f581e127fa580bb8d9c057502c98b4";
 
 const EXPECTED = {
   headwords: 11_470,
@@ -101,8 +100,8 @@ function assertExpectations(stats: Stats): string[] {
     if (actual !== expected) failures.push(`${label}: expected ${expected}, got ${actual}`);
   };
 
-  if (stats.fileSha256 !== PINNED_SHA256) {
-    failures.push(`file sha256: expected ${PINNED_SHA256}, got ${stats.fileSha256}`);
+  if (stats.fileSha256 !== EXPECTED_SHA256) {
+    failures.push(`file sha256: expected ${EXPECTED_SHA256}, got ${stats.fileSha256}`);
   }
   check("headwords", stats.headwords, EXPECTED.headwords);
   check("forms", stats.forms, EXPECTED.forms);
@@ -121,8 +120,7 @@ function printReport(stats: Stats, failures: string[]): void {
     "HSK dataset verification",
     "========================",
     `dataset path     : ${DATASET_PATH}`,
-    `pinned commit    : ${PINNED_COMMIT}`,
-    `pinned sha256    : ${PINNED_SHA256}`,
+    `expected sha256  : ${EXPECTED_SHA256}`,
     `actual sha256    : ${stats.fileSha256}`,
     `file bytes       : ${stats.fileBytes.toLocaleString()}`,
     "",

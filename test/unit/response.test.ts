@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
   emptyResult,
   errorResult,
@@ -12,14 +12,14 @@ beforeEach(() => {
 });
 
 function parse(result: ReturnType<typeof jsonResult>) {
-  return JSON.parse(result.content[0]!.text);
+  return JSON.parse(result.content[0]?.text ?? "");
 }
 
 describe("jsonResult", () => {
   it("wraps data as MCP text content", () => {
     const r = jsonResult({ foo: 1 });
     expect(r.content).toHaveLength(1);
-    expect(r.content[0]!.type).toBe("text");
+    expect(r.content[0]?.type).toBe("text");
     expect(parse(r).foo).toBe(1);
   });
 
@@ -58,6 +58,6 @@ describe("errorResult", () => {
   it("sets isError and message", () => {
     const r = errorResult("bad cursor");
     expect(r.isError).toBe(true);
-    expect(r.content[0]!.text).toBe("bad cursor");
+    expect(r.content[0]?.text).toBe("bad cursor");
   });
 });

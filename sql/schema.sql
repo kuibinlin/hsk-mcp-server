@@ -1,6 +1,6 @@
 -- HSK MCP Server — D1 schema
--- Generated per docs/PLAN_v2.md §B. Idempotent: every apply drops and recreates.
--- Dataset pin: drkameleon/complete-hsk-vocabulary @ 7ac65bf1a6387d35f1ade478906172a19311c7f9
+-- Idempotent: every apply drops and recreates.
+-- Dataset: complete.json from drkameleon/complete-hsk-vocabulary
 -- Invariants (see scripts/verify-dataset.ts): 11,470 headwords, 12,623 forms, 622 polyphones, 105 freq sentinels.
 -- form_key derivation: sha256(simplified|traditional|pinyin)[:12] using the case-preserving tone-marked pinyin.
 -- Verified zero collisions across 12,623 forms; tone-stripped variants collide on within-headword tone differences.

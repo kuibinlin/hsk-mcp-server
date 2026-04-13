@@ -30,31 +30,25 @@ export async function checkRateLimit(request: Request, env: Env): Promise<Respon
     if (count >= PER_MINUTE_LIMIT) return tooMany();
     await env.RL_KV.put(minuteKey, String(count + 1), { expirationTtl: 120 });
 
-    // Daily cap (one KV write per IP per day max)
+    // Daily cap
     const day = new Date().toISOString().slice(0, 10);
     const dailyKey = `rl:daily:${ip}:${day}`;
     const daily = Number(await env.RL_KV.get(dailyKey)) || 0;
     if (daily >= DAILY_LIMIT) return tooMany();
-    if (daily === 0 || count === 0) {
-      // Only write daily counter on first request or first of the minute
-      await env.RL_KV.put(dailyKey, String(daily + 1), { expirationTtl: 86400 });
-    }
+    await env.RL_KV.put(dailyKey, String(daily + 1), { expirationTtl: 86400 });
   }
 
   return null;
 }
 
 function tooMany(): Response {
-  return new Response(
-    JSON.stringify({ error: "Rate limit exceeded" }),
-    {
-      status: 429,
-      headers: {
-        "content-type": "application/json",
-        "retry-after": "60",
-      },
+  return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
+    status: 429,
+    headers: {
+      "content-type": "application/json",
+      "retry-after": "60",
     },
-  );
+  });
 }
 
 // The RL binding type isn't in @cloudflare/workers-types yet on all plans.

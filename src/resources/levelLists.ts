@@ -7,7 +7,9 @@ export function registerLevelLists(server: McpServer, db: D1Database): void {
     server.registerResource(
       `level-${level}`,
       `hsk://level/${level}`,
-      { description: `HSK 3.0 level ${level} vocabulary list (brief format, ordered by frequency).` },
+      {
+        description: `HSK 3.0 level ${level} vocabulary list (brief format, ordered by frequency).`,
+      },
       async () => {
         const hws = await headwordsByLevel(db, "new", level);
         const ids = hws.map((h) => h.id);
