@@ -24,7 +24,7 @@ export default {
     if (url.pathname === "/.well-known/mcp.json") {
       const body = {
         name: "hsk-mcp",
-        description: "HSK Chinese vocabulary MCP server — 12 tutor-oriented tools for Claude",
+        description: "HSK Chinese vocabulary MCP server — 13 tutor-oriented tools for Claude",
         url: `${url.origin}/mcp`,
         protocolVersion: "2025-11-25",
         transport: "streamable-http",

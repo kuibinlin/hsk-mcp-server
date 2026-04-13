@@ -12,7 +12,7 @@
     "url": "git+https://github.com/kuibinlin/hsk-mcp-server.git"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "packageManager": "pnpm@10.33.0",
   "scripts": {

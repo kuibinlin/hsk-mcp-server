@@ -279,11 +279,12 @@ src/
   shape.ts              # DB row -> clean response shaping
   response.ts           # MCP response formatting helpers
   pinyin.ts             # Tone stripping, normalization
+  pos.ts                # POS tag code-to-label mapping
   middleware/
     cors.ts             # CORS headers
     errorWrap.ts        # D1 error -> JSON-RPC -32603
     rateLimit.ts        # Per-IP rate limiting (30/min, 5k/day)
-  tools/                # 12 tool handlers (one file each)
+  tools/                # 13 tool handlers (one file each)
   resources/            # MCP resources (meta, level lists)
 sql/
   schema.sql            # D1 DDL (tables, indexes, FTS5)
