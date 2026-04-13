@@ -9,7 +9,7 @@ const HW: HeadwordRow = {
   frequency: 12,
   frequency_rank: 1,
   frequency_rarity: "common",
-  pos_tags: '["adjective","verb"]',
+  pos_tags: '["a","v"]',
   level_tags: '["new-1","old-1"]',
   new_level: 1,
   old_level: 1,
@@ -84,7 +84,10 @@ describe("shapeWord", () => {
     const result = shapeWord(HW, [FORM_A, FORM_B]);
     expect(result.simplified).toBe("好");
     expect(result.radical).toBe("女");
-    expect(result.pos).toEqual(["adjective", "verb"]);
+    expect(result.pos).toEqual([
+      { code: "a", label: "adjective" },
+      { code: "v", label: "verb" },
+    ]);
     expect(result.levels).toEqual(["new-1", "old-1"]);
     expect(result.forms).toHaveLength(2);
     expect(result.forms[0]?.pinyin).toBe("hǎo");

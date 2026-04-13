@@ -2,6 +2,7 @@
 // Transforms raw D1 rows into clean nested objects for tool responses.
 
 import type { FormRow, HeadwordRow } from "./db.js";
+import { type PosTag, resolvePos } from "./pos.js";
 
 // ── Output types ─────────────────────────────────────────────────────
 
@@ -26,7 +27,7 @@ export interface WordShape {
   frequency: number;
   frequency_rank: number | null;
   frequency_rarity: string;
-  pos: string[];
+  pos: PosTag[];
   levels: string[];
   new_level: number | null;
   old_level: number | null;
@@ -67,7 +68,7 @@ export function shapeWord(hw: HeadwordRow, forms: FormRow[]): WordShape {
     frequency: hw.frequency,
     frequency_rank: hw.frequency_rank,
     frequency_rarity: hw.frequency_rarity,
-    pos: JSON.parse(hw.pos_tags) as string[],
+    pos: (JSON.parse(hw.pos_tags) as string[]).map(resolvePos),
     levels: JSON.parse(hw.level_tags) as string[],
     new_level: hw.new_level,
     old_level: hw.old_level,
