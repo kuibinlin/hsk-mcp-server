@@ -1,20 +1,22 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { formsByHeadwordId, headwordBySimplified } from "../db.js";
 import { emptyResult, jsonResult } from "../response.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk_classifier_for",
+    "hsk.classifier",
     {
       title: "Classifier for word",
       description:
         "Find the measure word (classifier / 量词) for a Chinese noun. " +
-        "Returns all classifiers associated with the word's forms. " +
-        "If the word has no classifiers in the dataset, returns an empty list.",
+        "Returns all classifiers associated with the word. " +
+        "Empty list if no classifiers exist in the dataset.",
       inputSchema: {
-        word: z.string().describe("Simplified Chinese word (e.g. '书', '人', '猫')"),
+        word: z.string().describe("Simplified Chinese noun. Example: '书', '航班', '猫'."),
       },
+      annotations: READONLY,
     },
     async ({ word }) => {
       const hw = await headwordBySimplified(db, word);

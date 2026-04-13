@@ -1,32 +1,32 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { formsByHeadwordIds, headwordsByLevel } from "../db.js";
 import { jsonResult } from "../response.js";
 import { groupFormsByHeadword, shapeWordBrief } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk_diff",
+    "hsk.diff",
     {
       title: "Compare HSK levels",
       description:
-        "Compare two HSK levels to see vocabulary differences. " +
-        "Shows words exclusive to each level and words in both. " +
-        "Useful for comparing old (HSK 2.0, levels 1-6) vs new (HSK 3.0, levels 1-7) standards, " +
-        "or seeing what vocabulary a new level adds. " +
-        "Meanings are in English.",
+        "Compare two HSK levels to see vocabulary overlap and differences. " +
+        "Shows words exclusive to each level and words shared by both. " +
+        "Useful for comparing old (HSK 2.0) vs new (HSK 3.0) standards.",
       inputSchema: {
-        level_a: z.number().int().min(1).max(7).describe("First HSK level (1-7)"),
+        level_a: z.number().int().min(1).max(7).describe("First HSK level. Range: 1-7."),
         scheme_a: z
           .enum(["new", "old"])
           .default("new")
-          .describe("HSK scheme for level_a: 'new' (3.0) or 'old' (2.0)"),
-        level_b: z.number().int().min(1).max(7).describe("Second HSK level (1-7)"),
+          .describe("HSK scheme for level_a. 'new' = HSK 3.0, 'old' = HSK 2.0. Default: 'new'."),
+        level_b: z.number().int().min(1).max(7).describe("Second HSK level. Range: 1-7."),
         scheme_b: z
           .enum(["new", "old"])
           .default("new")
-          .describe("HSK scheme for level_b: 'new' (3.0) or 'old' (2.0)"),
+          .describe("HSK scheme for level_b. 'new' = HSK 3.0, 'old' = HSK 2.0. Default: 'new'."),
       },
+      annotations: READONLY,
     },
     async ({ level_a, scheme_a, level_b, scheme_b }) => {
       const [hwsA, hwsB] = await Promise.all([

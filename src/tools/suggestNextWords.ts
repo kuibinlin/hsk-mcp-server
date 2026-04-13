@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { encodeCursor, fingerprint, PAGE_SIZE, resolveOffset } from "../cursor.js";
 import { formsByHeadwordIds, suggestWords } from "../db.js";
 import { errorResult, paginatedResult } from "../response.js";
@@ -7,26 +8,31 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk_suggest_next_words",
+    "hsk.suggest_next",
     {
       title: "Suggest next words",
       description:
-        "Suggest the next words to learn at a given HSK level, excluding words the learner already knows. " +
+        "Suggest the next words to learn at a given HSK level, excluding words already known. " +
         "Each word includes simplified/traditional characters, pinyin, part of speech, meanings, " +
         "radical, frequency rank, and HSK levels. Ordered by frequency (most useful first). " +
-        "Paginated (20 per page). Meanings are in English.",
+        "Paginated (20 per page).",
       inputSchema: {
-        level: z.number().int().min(1).max(7).describe("Target HSK level (1-7)"),
+        level: z.number().int().min(1).max(7).describe("Target HSK level. Range: 1-7."),
         scheme: z
           .enum(["new", "old"])
           .default("new")
-          .describe("HSK scheme: 'new' (3.0) or 'old' (2.0)"),
+          .describe(
+            "HSK scheme. 'new' = HSK 3.0 (levels 1-7), 'old' = HSK 2.0 (levels 1-6). Default: 'new'.",
+          ),
         known: z
           .array(z.string())
           .default([])
-          .describe("Simplified Chinese words the learner already knows (e.g. ['你好', '谢谢'])"),
-        cursor: z.string().optional().describe("Pagination cursor from a previous response"),
+          .describe(
+            "Simplified Chinese words the learner already knows. Example: ['你好', '谢谢', '外卖'].",
+          ),
+        cursor: z.string().optional().describe("Pagination cursor from a previous response."),
       },
+      annotations: READONLY,
     },
     async ({ level, scheme, known, cursor: token }) => {
       // Sort known list so fingerprint is stable regardless of input order

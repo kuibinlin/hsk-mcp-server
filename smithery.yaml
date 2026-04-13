@@ -1,0 +1,23 @@
+name: hsk-mcp
+description: >
+  HSK Chinese vocabulary MCP server — 13 read-only tools for word lookup,
+  meaning search, transcription conversion, frequency analysis, study set
+  generation, and level comparison. Covers 11,470 headwords across HSK 1-7
+  (new 3.0) and HSK 1-6 (old 2.0). No API key required.
+homepage: https://github.com/kuibinlin/hsk-mcp-server
+repository: https://github.com/kuibinlin/hsk-mcp-server
+license: MIT
+categories:
+  - education
+  - language
+tags:
+  - chinese
+  - hsk
+  - vocabulary
+  - mandarin
+  - pinyin
+  - language-learning
+  - study-tool
+startCommand:
+  type: http
+  url: https://hsk-mcp.linsnotes.com/mcp

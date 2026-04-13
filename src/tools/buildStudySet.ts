@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { encodeCursor, fingerprint, PAGE_SIZE, resolveOffset } from "../cursor.js";
 import { formsByHeadwordIds, headwordsByLevelPaged } from "../db.js";
 import { errorResult, paginatedResult } from "../response.js";
@@ -7,22 +8,24 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk_build_study_set",
+    "hsk.build_study_set",
     {
       title: "Build study set",
       description:
         "Build a study set of HSK words for a given level, ordered by frequency (most common first). " +
         "Each word includes simplified/traditional characters, pinyin, part of speech, meanings, " +
-        "radical, frequency rank, and HSK levels. Paginated (20 per page). " +
-        "Meanings are in English.",
+        "radical, frequency rank, and HSK levels. Paginated (20 per page).",
       inputSchema: {
-        level: z.number().int().min(1).max(7).describe("HSK level (1-7)"),
+        level: z.number().int().min(1).max(7).describe("HSK level. Range: 1-7."),
         scheme: z
           .enum(["new", "old"])
           .default("new")
-          .describe("HSK scheme: 'new' (3.0, levels 1-7) or 'old' (2.0, levels 1-6)"),
-        cursor: z.string().optional().describe("Pagination cursor from a previous response"),
+          .describe(
+            "HSK scheme. 'new' = HSK 3.0 (levels 1-7), 'old' = HSK 2.0 (levels 1-6). Default: 'new'.",
+          ),
+        cursor: z.string().optional().describe("Pagination cursor from a previous response."),
       },
+      annotations: READONLY,
     },
     async ({ level, scheme, cursor: token }) => {
       const fp = fingerprint({ level, scheme });

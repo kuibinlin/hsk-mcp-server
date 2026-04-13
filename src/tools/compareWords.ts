@@ -1,26 +1,27 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { formsByHeadwordIds, headwordsBySimplifiedList } from "../db.js";
 import { jsonResult } from "../response.js";
 import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk_compare_words",
+    "hsk.compare",
     {
       title: "Compare words",
       description:
         "Compare 2-5 Chinese words side by side. " +
         "Each word shows simplified/traditional characters, pinyin, part of speech, frequency rank, " +
-        "HSK levels, radical, all transcription systems, and meanings. " +
-        "Meanings are in English.",
+        "HSK levels, radical, all transcription systems, and meanings.",
       inputSchema: {
         words: z
           .array(z.string())
           .min(2)
           .max(5)
-          .describe("Simplified Chinese words to compare (e.g. ['呵', '啊', '哎'])"),
+          .describe("Simplified Chinese words to compare. Example: ['聪明', '推荐', '参考']."),
       },
+      annotations: READONLY,
     },
     async ({ words }) => {
       const hws = await headwordsBySimplifiedList(db, words);

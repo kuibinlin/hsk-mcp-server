@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { encodeCursor, fingerprint, PAGE_SIZE, resolveOffset } from "../cursor.js";
 import { headwordsByIds, searchGloss } from "../db.js";
 import { errorResult, paginatedResult } from "../response.js";
@@ -7,18 +8,20 @@ import { shapeForm } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk_search_meaning",
+    "hsk.search_meaning",
     {
       title: "Search by English meaning",
       description:
         "Search for HSK words by English meaning using full-text search. " +
         "Each result includes simplified characters, pinyin, all transcription systems, meanings, " +
-        "classifiers, and HSK levels. Ordered by relevance. " +
-        "Paginated (20 per page). Meanings are in English.",
+        "classifiers, and HSK levels. Ordered by relevance. Paginated (20 per page).",
       inputSchema: {
-        query: z.string().describe("English meaning to search for (e.g. 'to eat', 'beautiful')"),
-        cursor: z.string().optional().describe("Pagination cursor from a previous response"),
+        query: z
+          .string()
+          .describe("English meaning to search for. Example: 'recommend', 'beautiful', 'to eat'."),
+        cursor: z.string().optional().describe("Pagination cursor from a previous response."),
       },
+      annotations: READONLY,
     },
     async ({ query, cursor: token }) => {
       const fp = fingerprint({ query });

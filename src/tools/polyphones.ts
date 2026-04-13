@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { encodeCursor, fingerprint, PAGE_SIZE, resolveOffset } from "../cursor.js";
 import { formsByHeadwordIds, polyphoneHeadwords } from "../db.js";
 import { errorResult, paginatedResult } from "../response.js";
@@ -7,16 +8,17 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk_polyphones",
+    "hsk.polyphones",
     {
       title: "Find polyphones",
       description:
-        "List Chinese characters with multiple pronunciations (多音字) in the HSK vocabulary. " +
+        "List Chinese characters with multiple pronunciations (多音字) in HSK vocabulary. " +
         "Each result includes all pronunciation forms with pinyin, meanings, and part of speech. " +
-        "Ordered by frequency. Paginated (20 per page). Meanings are in English.",
+        "Ordered by frequency. Paginated (20 per page).",
       inputSchema: {
-        cursor: z.string().optional().describe("Pagination cursor from a previous response"),
+        cursor: z.string().optional().describe("Pagination cursor from a previous response."),
       },
+      annotations: READONLY,
     },
     async ({ cursor: token }) => {
       const fp = fingerprint({ tool: "polyphones" });

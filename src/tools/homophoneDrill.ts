@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { encodeCursor, fingerprint, PAGE_SIZE, resolveOffset } from "../cursor.js";
 import { formsByPinyinPlain, headwordsByIds, searchPinyin } from "../db.js";
 import { normalize } from "../pinyin.js";
@@ -8,19 +9,22 @@ import { shapeForm } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk_homophone_drill",
+    "hsk.homophones",
     {
       title: "Homophone drill",
       description:
-        "Find HSK words that share the same pinyin pronunciation (homophones). " +
-        "Useful for drilling tone-pair distinctions. Accepts pinyin with tone marks (yì), " +
-        "tone numbers (yi4), or plain (yi). Each result includes simplified characters, pinyin, " +
-        "all transcription systems, meanings, and HSK levels. " +
-        "Paginated (20 per page). Meanings are in English.",
+        "Find HSK words sharing the same pinyin pronunciation (homophones). " +
+        "Useful for drilling tone-pair distinctions. Each result includes simplified characters, " +
+        "pinyin, all transcription systems, meanings, and HSK levels. Paginated (20 per page).",
       inputSchema: {
-        pinyin: z.string().describe("Pinyin to search for (e.g. 'yì', 'yi4', 'yi')"),
-        cursor: z.string().optional().describe("Pagination cursor from a previous response"),
+        pinyin: z
+          .string()
+          .describe(
+            "Pinyin to search for. Accepts tone marks (yì), tone numbers (yi4), or plain (yi).",
+          ),
+        cursor: z.string().optional().describe("Pagination cursor from a previous response."),
       },
+      annotations: READONLY,
     },
     async ({ pinyin, cursor: token }) => {
       const norm = normalize(pinyin);

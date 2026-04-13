@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { encodeCursor, fingerprint, PAGE_SIZE, resolveOffset } from "../cursor.js";
 import { formsByHeadwordIds, headwordsByRadical } from "../db.js";
 import { errorResult, paginatedResult } from "../response.js";
@@ -7,18 +8,18 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk_words_by_radical",
+    "hsk.words_by_radical",
     {
       title: "Words by radical",
       description:
-        "Find all HSK words that share a given radical (部首). " +
+        "Find all HSK words sharing a given radical (部首). " +
         "Each word includes simplified/traditional characters, pinyin, part of speech, meanings, " +
-        "radical, frequency rank, and HSK levels. Ordered by frequency rank. " +
-        "Paginated (20 per page). Meanings are in English.",
+        "radical, frequency rank, and HSK levels. Ordered by frequency. Paginated (20 per page).",
       inputSchema: {
-        radical: z.string().describe("Chinese radical character (e.g. '女', '水', '心')"),
-        cursor: z.string().optional().describe("Pagination cursor from a previous response"),
+        radical: z.string().describe("Chinese radical character. Example: '女', '口', '心'."),
+        cursor: z.string().optional().describe("Pagination cursor from a previous response."),
       },
+      annotations: READONLY,
     },
     async ({ radical, cursor: token }) => {
       const fp = fingerprint({ radical });

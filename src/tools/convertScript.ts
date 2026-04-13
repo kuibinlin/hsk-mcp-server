@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import { formsByHeadwordId, headwordBySimplified } from "../db.js";
 import { emptyResult, jsonResult } from "../response.js";
 
@@ -8,16 +9,17 @@ type System = (typeof SYSTEMS)[number];
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk_convert_script",
+    "hsk.convert_script",
     {
       title: "Convert transcription",
       description:
-        "Convert a Chinese word between transcription systems: pinyin (tone marks), " +
+        "Convert a Chinese word to all 5 transcription systems: pinyin (tone marks), " +
         "numeric (tone numbers), Wade-Giles, Bopomofo/Zhuyin, and Gwoyeu Romatzyh. " +
-        "Input is a simplified Chinese word; output shows all five systems for every pronunciation form.",
+        "Returns all systems for every pronunciation form.",
       inputSchema: {
-        word: z.string().describe("Simplified Chinese word (e.g. '阿姨', '好')"),
+        word: z.string().describe("Simplified Chinese word. Example: '翻译', '好'."),
       },
+      annotations: READONLY,
     },
     async ({ word }) => {
       const hw = await headwordBySimplified(db, word);

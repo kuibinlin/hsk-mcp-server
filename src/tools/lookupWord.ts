@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import {
   formsByHeadwordId,
   formsByHeadwordIds,
@@ -14,7 +15,7 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk_lookup_word",
+    "hsk.lookup",
     {
       title: "Look up HSK word",
       description:
@@ -23,8 +24,13 @@ export function register(server: McpServer, db: D1Database): void {
         "Pinyin input accepts tone marks (hǎo), tone numbers (hao3), or plain ASCII (hao). " +
         "Meanings are in English.",
       inputSchema: {
-        word: z.string().describe("The word to look up (simplified, traditional, or pinyin)"),
+        word: z
+          .string()
+          .describe(
+            "Chinese word to look up. Accepts simplified (好), traditional (國), or pinyin (hǎo / hao3 / hao).",
+          ),
       },
+      annotations: READONLY,
     },
     async ({ word }) => {
       // 1. Simplified exact match (unique index)

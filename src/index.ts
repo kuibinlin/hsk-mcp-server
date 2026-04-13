@@ -66,66 +66,66 @@ function serverCard(origin: string) {
     url: `${origin}/mcp`,
     tools: [
       {
-        name: "hsk_lookup_word",
+        name: "hsk.lookup",
         description:
           "Look up a Chinese word by simplified characters, traditional characters, or pinyin. " +
           "Returns all pronunciation forms with meanings, frequency rank, and HSK level.",
       },
       {
-        name: "hsk_frequency_rank",
+        name: "hsk.frequency",
         description: "Get frequency ranking, rarity class, and HSK level for a Chinese word.",
       },
       {
-        name: "hsk_convert_script",
+        name: "hsk.convert_script",
         description:
-          "Show a Chinese word in all 5 transcription systems: pinyin, numeric, Wade-Giles, Bopomofo, Romatzyh.",
+          "Convert a Chinese word to all 5 transcription systems: pinyin, numeric, Wade-Giles, Bopomofo, Romatzyh.",
       },
       {
-        name: "hsk_classifier_for",
+        name: "hsk.classifier",
         description: "Find the measure word (classifier / 量词) for a Chinese noun.",
       },
       {
-        name: "hsk_convert_characters",
+        name: "hsk.convert_characters",
         description:
           "Convert between simplified and traditional Chinese characters with pinyin and meanings.",
       },
       {
-        name: "hsk_search_meaning",
+        name: "hsk.search_meaning",
         description:
-          "Full-text search for HSK words by English meaning, ranked by relevance. Paginated.",
+          "Search for HSK words by English meaning using full-text search. Ordered by relevance. Paginated.",
       },
       {
-        name: "hsk_words_by_radical",
+        name: "hsk.words_by_radical",
         description:
           "Find all HSK words sharing a given radical (部首), ordered by frequency. Paginated.",
       },
       {
-        name: "hsk_polyphones",
+        name: "hsk.polyphones",
         description:
           "List characters with multiple pronunciations (多音字) with all readings. Paginated.",
       },
       {
-        name: "hsk_homophone_drill",
+        name: "hsk.homophones",
         description:
           "Find words sharing the same pinyin pronunciation for tone-pair drilling. Paginated.",
       },
       {
-        name: "hsk_build_study_set",
+        name: "hsk.build_study_set",
         description:
           "Build a study set for an HSK level with pinyin, part of speech, meanings, and frequency. Paginated.",
       },
       {
-        name: "hsk_suggest_next_words",
+        name: "hsk.suggest_next",
         description:
           "Suggest next words to learn at an HSK level, excluding words already known. Paginated.",
       },
       {
-        name: "hsk_compare_words",
+        name: "hsk.compare",
         description:
           "Compare 2-5 Chinese words side by side: frequency, HSK levels, part of speech, meanings.",
       },
       {
-        name: "hsk_diff",
+        name: "hsk.diff",
         description: "Compare two HSK levels to see vocabulary overlap and differences.",
       },
     ],

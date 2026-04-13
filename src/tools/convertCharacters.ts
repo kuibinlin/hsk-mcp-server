@@ -1,5 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { READONLY } from "../annotations.js";
 import {
   formsByHeadwordId,
   formsByHeadwordIds,
@@ -11,19 +12,19 @@ import { emptyResult, jsonResult } from "../response.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk_convert_characters",
+    "hsk.convert_characters",
     {
       title: "Convert simplified ↔ traditional",
       description:
         "Convert a Chinese word between simplified and traditional characters. " +
-        "Accepts either script as input and returns both scripts with pinyin and meanings. " +
-        "Only covers HSK vocabulary (11,470 words). " +
-        "Meanings are in English.",
+        "Accepts either script and returns both with pinyin and meanings. " +
+        "Covers 11,470 HSK words. Meanings are in English.",
       inputSchema: {
         word: z
           .string()
-          .describe("Chinese word in simplified or traditional characters (e.g. '国' or '國')"),
+          .describe("Chinese word in simplified or traditional. Example: '国' or '國'."),
       },
+      annotations: READONLY,
     },
     async ({ word }) => {
       // 1. Try simplified match
