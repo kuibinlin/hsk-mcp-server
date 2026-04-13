@@ -81,16 +81,19 @@ curl https://hsk-mcp.linsnotes.com/.well-known/mcp.json
 
 Once connected, just talk to your AI assistant naturally. The assistant will call the right tools automatically. Examples:
 
-- "Look up the word 阿姨"
-- "What HSK level is 呵护?"
-- "Find Chinese words meaning 'beautiful'"
-- "Show me HSK level 3 words with the 口 radical"
-- "Give me 5 polyphones (characters with multiple readings)"
-- "What's the frequency rank of 啊?"
-- "Convert 阿姨 to Wade-Giles and Bopomofo"
-- "I know 你好 and 谢谢 — what should I learn next at HSK 1?"
-- "Compare the words 呵 and 啊"
-- "What classifier (measure word) goes with 书?"
+- "Look up 翻译 — show me the pinyin, traditional form, meanings, and part of speech"
+- "What HSK level is 改革? Include its frequency rank"
+- "Find Chinese words meaning 'recommend' — show results as a table with pinyin and HSK level"
+- "Show me HSK level 3 words with the 口 radical, formatted as a numbered list with pinyin and meanings"
+- "Give me 5 polyphones (characters with multiple readings) with all their pronunciations and meanings"
+- "What's the frequency rank and rarity class of 准备?"
+- "Convert 互联网 to all transcription systems: pinyin, Wade-Giles, Bopomofo, and Romatzyh"
+- "Build me an HSK 3 study set as a markdown table with columns: word, pinyin, part of speech, and meaning"
+- "I know 外卖, 高铁, and 请客 — suggest what I should learn next at HSK 3, include frequency rank"
+- "Compare 聪明 and 简历 side by side — show frequency, HSK level, part of speech, and all meanings"
+- "What classifier (measure word) goes with 航班?"
+
+> **Tip:** Each tool returns rich structured data (pinyin, traditional characters, part of speech, frequency rank, HSK levels, transcriptions, meanings, classifiers). The AI decides what to show based on your prompt — so **be specific about what fields and format you want**. For example, "give me HSK 2 words" will return a basic list, but "give me HSK 2 words as a table with pinyin, part of speech, and meaning" will produce a much more useful result.
 
 ## Tools
 
