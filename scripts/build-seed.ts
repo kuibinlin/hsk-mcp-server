@@ -120,8 +120,6 @@ function assemble(buckets: Buckets): string {
     "-- Re-run after `wrangler d1 execute DB --local --file=sql/schema.sql` to repopulate.",
     "-- Dataset pin: drkameleon/complete-hsk-vocabulary @ 7ac65bf1a6387d35f1ade478906172a19311c7f9",
     "",
-    "BEGIN TRANSACTION;",
-    "",
     "-- headwords",
     ...buckets.headwords,
     "",
@@ -136,8 +134,6 @@ function assemble(buckets: Buckets): string {
     "",
     "-- hanzi_fts",
     ...buckets.hanziFts,
-    "",
-    "COMMIT;",
     "",
   ];
   return lines.join("\n");
