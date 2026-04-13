@@ -12,7 +12,8 @@ export function register(server: McpServer, db: D1Database, secret: string): voi
       title: "Build study set",
       description:
         "Build a study set of HSK words for a given level, ordered by frequency (most common first). " +
-        "Paginated — use cursor to fetch more. " +
+        "Each word includes simplified/traditional characters, pinyin, part of speech, meanings, " +
+        "radical, frequency rank, and HSK levels. Paginated (20 per page). " +
         "Meanings are in English.",
       inputSchema: {
         level: z.number().int().min(1).max(7).describe("HSK level (1-7)"),

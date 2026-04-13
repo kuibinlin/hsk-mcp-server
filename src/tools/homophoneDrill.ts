@@ -13,8 +13,10 @@ export function register(server: McpServer, db: D1Database, secret: string): voi
       title: "Homophone drill",
       description:
         "Find HSK words that share the same pinyin pronunciation (homophones). " +
-        "Useful for drilling tone-pair distinctions. Accepts pinyin with or without tone marks. " +
-        "Meanings are in English. For Chinese-language queries, use the hanzi lookup tool instead.",
+        "Useful for drilling tone-pair distinctions. Accepts pinyin with tone marks (yì), " +
+        "tone numbers (yi4), or plain (yi). Each result includes simplified characters, pinyin, " +
+        "all transcription systems, meanings, and HSK levels. " +
+        "Paginated (20 per page). Meanings are in English.",
       inputSchema: {
         pinyin: z.string().describe("Pinyin to search for (e.g. 'yì', 'yi4', 'yi')"),
         cursor: z.string().optional().describe("Pagination cursor from a previous response"),

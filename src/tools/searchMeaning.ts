@@ -12,8 +12,9 @@ export function register(server: McpServer, db: D1Database, secret: string): voi
       title: "Search by English meaning",
       description:
         "Search for HSK words by English meaning using full-text search. " +
-        "Returns matching forms with headword context, ordered by relevance. Paginated. " +
-        "Meanings are in English. For Chinese-language queries, use the hanzi/pinyin search tools instead.",
+        "Each result includes simplified characters, pinyin, all transcription systems, meanings, " +
+        "classifiers, and HSK levels. Ordered by relevance. " +
+        "Paginated (20 per page). Meanings are in English.",
       inputSchema: {
         query: z.string().describe("English meaning to search for (e.g. 'to eat', 'beautiful')"),
         cursor: z.string().optional().describe("Pagination cursor from a previous response"),

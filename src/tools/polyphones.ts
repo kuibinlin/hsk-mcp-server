@@ -12,7 +12,8 @@ export function register(server: McpServer, db: D1Database, secret: string): voi
       title: "Find polyphones",
       description:
         "List Chinese characters with multiple pronunciations (多音字) in the HSK vocabulary. " +
-        "Returns headwords that have two or more distinct pinyin readings, ordered by frequency. Paginated.",
+        "Each result includes all pronunciation forms with pinyin, meanings, and part of speech. " +
+        "Ordered by frequency. Paginated (20 per page). Meanings are in English.",
       inputSchema: {
         cursor: z.string().optional().describe("Pagination cursor from a previous response"),
       },

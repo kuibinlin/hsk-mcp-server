@@ -10,8 +10,9 @@ export function register(server: McpServer, db: D1Database): void {
     {
       title: "Compare words",
       description:
-        "Compare 2-5 Chinese words side by side. Shows frequency, HSK levels, radicals, " +
-        "transcriptions, and meanings for each word to help learners understand differences. " +
+        "Compare 2-5 Chinese words side by side. " +
+        "Each word shows simplified/traditional characters, pinyin, part of speech, frequency rank, " +
+        "HSK levels, radical, all transcription systems, and meanings. " +
         "Meanings are in English.",
       inputSchema: {
         words: z

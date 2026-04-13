@@ -4,6 +4,17 @@
   "private": true,
   "type": "module",
   "description": "Remote MCP server exposing HSK Chinese vocabulary as tutor-oriented tools for Claude",
+  "keywords": [
+    "mcp",
+    "chinese",
+    "hsk",
+    "vocabulary",
+    "mandarin",
+    "pinyin",
+    "language-learning",
+    "chinese-characters",
+    "study-tool"
+  ],
   "license": "MIT",
   "author": "Kuibin Lin",
   "homepage": "https://github.com/kuibinlin/hsk-mcp-server",

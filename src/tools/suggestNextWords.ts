@@ -12,8 +12,9 @@ export function register(server: McpServer, db: D1Database, secret: string): voi
       title: "Suggest next words",
       description:
         "Suggest the next words to learn at a given HSK level, excluding words the learner already knows. " +
-        "Results are ordered by frequency (most useful words first). Paginated. " +
-        "Meanings are in English.",
+        "Each word includes simplified/traditional characters, pinyin, part of speech, meanings, " +
+        "radical, frequency rank, and HSK levels. Ordered by frequency (most useful first). " +
+        "Paginated (20 per page). Meanings are in English.",
       inputSchema: {
         level: z.number().int().min(1).max(7).describe("Target HSK level (1-7)"),
         scheme: z

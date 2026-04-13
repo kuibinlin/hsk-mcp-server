@@ -37,6 +37,15 @@ export default {
       );
     }
 
+    if (url.pathname === "/.well-known/mcp/server-card.json") {
+      return withCors(
+        new Response(JSON.stringify(serverCard(url.origin), null, 2), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      );
+    }
+
     if (url.pathname === "/mcp" || url.pathname.startsWith("/mcp/")) {
       const rateLimited = await checkRateLimit(request, env);
       if (rateLimited) return withCors(rateLimited);
@@ -49,3 +58,89 @@ export default {
     return withCors(new Response("Not Found", { status: 404 }));
   },
 } satisfies ExportedHandler<Env>;
+
+function serverCard(origin: string) {
+  return {
+    serverInfo: { name: "hsk-mcp", version: "0.1.0" },
+    authentication: { required: false },
+    url: `${origin}/mcp`,
+    tools: [
+      {
+        name: "hsk_lookup_word",
+        description:
+          "Look up a Chinese word by simplified characters, traditional characters, or pinyin. " +
+          "Returns all pronunciation forms with meanings, frequency rank, and HSK level.",
+      },
+      {
+        name: "hsk_frequency_rank",
+        description: "Get frequency ranking, rarity class, and HSK level for a Chinese word.",
+      },
+      {
+        name: "hsk_convert_script",
+        description:
+          "Show a Chinese word in all 5 transcription systems: pinyin, numeric, Wade-Giles, Bopomofo, Romatzyh.",
+      },
+      {
+        name: "hsk_classifier_for",
+        description: "Find the measure word (classifier / 量词) for a Chinese noun.",
+      },
+      {
+        name: "hsk_convert_characters",
+        description:
+          "Convert between simplified and traditional Chinese characters with pinyin and meanings.",
+      },
+      {
+        name: "hsk_search_meaning",
+        description:
+          "Full-text search for HSK words by English meaning, ranked by relevance. Paginated.",
+      },
+      {
+        name: "hsk_words_by_radical",
+        description:
+          "Find all HSK words sharing a given radical (部首), ordered by frequency. Paginated.",
+      },
+      {
+        name: "hsk_polyphones",
+        description:
+          "List characters with multiple pronunciations (多音字) with all readings. Paginated.",
+      },
+      {
+        name: "hsk_homophone_drill",
+        description:
+          "Find words sharing the same pinyin pronunciation for tone-pair drilling. Paginated.",
+      },
+      {
+        name: "hsk_build_study_set",
+        description:
+          "Build a study set for an HSK level with pinyin, part of speech, meanings, and frequency. Paginated.",
+      },
+      {
+        name: "hsk_suggest_next_words",
+        description:
+          "Suggest next words to learn at an HSK level, excluding words already known. Paginated.",
+      },
+      {
+        name: "hsk_compare_words",
+        description:
+          "Compare 2-5 Chinese words side by side: frequency, HSK levels, part of speech, meanings.",
+      },
+      {
+        name: "hsk_diff",
+        description: "Compare two HSK levels to see vocabulary overlap and differences.",
+      },
+    ],
+    resources: [
+      {
+        uri: "hsk://meta",
+        description: "Server metadata: dataset version, tool count, headword/form counts",
+      },
+      { uri: "hsk://level/1", description: "Full vocabulary list for HSK 3.0 level 1" },
+      { uri: "hsk://level/2", description: "Full vocabulary list for HSK 3.0 level 2" },
+      { uri: "hsk://level/3", description: "Full vocabulary list for HSK 3.0 level 3" },
+      { uri: "hsk://level/4", description: "Full vocabulary list for HSK 3.0 level 4" },
+      { uri: "hsk://level/5", description: "Full vocabulary list for HSK 3.0 level 5" },
+      { uri: "hsk://level/6", description: "Full vocabulary list for HSK 3.0 level 6" },
+      { uri: "hsk://level/7", description: "Full vocabulary list for HSK 3.0 level 7" },
+    ],
+  };
+}

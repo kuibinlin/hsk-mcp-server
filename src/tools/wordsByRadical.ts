@@ -12,8 +12,9 @@ export function register(server: McpServer, db: D1Database, secret: string): voi
       title: "Words by radical",
       description:
         "Find all HSK words that share a given radical (部首). " +
-        "Returns full word details ordered by frequency rank. Paginated. " +
-        "Meanings are in English.",
+        "Each word includes simplified/traditional characters, pinyin, part of speech, meanings, " +
+        "radical, frequency rank, and HSK levels. Ordered by frequency rank. " +
+        "Paginated (20 per page). Meanings are in English.",
       inputSchema: {
         radical: z.string().describe("Chinese radical character (e.g. '女', '水', '心')"),
         cursor: z.string().optional().describe("Pagination cursor from a previous response"),
