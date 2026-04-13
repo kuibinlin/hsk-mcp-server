@@ -39,7 +39,7 @@ Restart Claude Desktop after saving. The HSK tools will be available in all conv
 ### Claude Code (CLI)
 
 ```bash
-claude mcp add hsk --transport streamable-http https://hsk-mcp.linsnotes.com/mcp
+claude mcp add hsk --transport http https://hsk-mcp.linsnotes.com/mcp
 ```
 
 This registers the server in `~/.claude.json`. Every new Claude Code session will connect to it and have access to all 12 tools. To remove it later: `claude mcp remove hsk`.
