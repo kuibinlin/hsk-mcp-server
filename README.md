@@ -275,7 +275,7 @@ pnpm lint
 src/
   index.ts              # Request router (healthz, well-known, MCP)
   mcp.ts                # MCP server setup + tool/resource registration
-  types.ts              # Env interface (D1, KV, secrets)
+  types.ts              # Env interface (D1, rate limit, secrets)
   cursor.ts             # HMAC-signed pagination cursors
   db.ts                 # Typed D1 query helpers
   shape.ts              # DB row -> clean response shaping
@@ -285,7 +285,7 @@ src/
   middleware/
     cors.ts             # CORS headers
     errorWrap.ts        # D1 error -> JSON-RPC -32603
-    rateLimit.ts        # Per-IP rate limiting (30/min, 5k/day)
+    rateLimit.ts        # Per-IP rate limiting (30/min via Workers Rate Limiting binding)
   tools/                # 13 tool handlers (one file each)
   resources/            # MCP resources (meta, level lists)
 sql/
