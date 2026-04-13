@@ -22,13 +22,20 @@ No API key or authentication is required. The server is publicly accessible and 
 
 ### Claude Desktop
 
-Add to your `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+Add to your `claude_desktop_config.json`:
+
+- Open Developer Settings: Click your `profile` in the sidebar, select `Settings`, then go to the `Developer` tab.
+- Edit Config: Click the `Edit Config` button to open your `claude_desktop_config.json` file.
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Add Server Details: Add your server configuration under the `mcpServers` key:
 
 ```json
 {
   "mcpServers": {
     "hsk": {
-      "url": "https://hsk-mcp.linsnotes.com/mcp"
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://hsk-mcp.linsnotes.com/mcp"]
     }
   }
 }
@@ -47,6 +54,7 @@ This registers the server in `~/.claude.json`. Every new Claude Code session wil
 ### Cursor
 
 Settings → MCP → Add new MCP server:
+
 - **Name:** `hsk`
 - **Type:** Streamable HTTP
 - **URL:** `https://hsk-mcp.linsnotes.com/mcp`
@@ -86,38 +94,39 @@ Once connected, just talk to your AI assistant naturally. The assistant will cal
 
 ### Lookup
 
-| Tool | Description | Input |
-|------|-------------|-------|
-| `hsk_lookup_word` | Look up a word by simplified, traditional, or pinyin. Returns all forms with meanings, frequency, and HSK level. | `word` |
-| `hsk_frequency_rank` | Get frequency ranking and rarity class for a word (1 = most common). | `word` |
-| `hsk_convert_script` | Show a word in all 5 transcription systems: pinyin, numeric, Wade-Giles, Bopomofo, Romatzyh. | `word` |
-| `hsk_classifier_for` | Find the measure word(s) for a noun. | `word` |
-| `hsk_convert_characters` | Convert between simplified and traditional characters. Returns both scripts with pinyin and meanings. | `word` |
+| Tool                     | Description                                                                                                      | Input  |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------- | ------ |
+| `hsk_lookup_word`        | Look up a word by simplified, traditional, or pinyin. Returns all forms with meanings, frequency, and HSK level. | `word` |
+| `hsk_frequency_rank`     | Get frequency ranking and rarity class for a word (1 = most common).                                             | `word` |
+| `hsk_convert_script`     | Show a word in all 5 transcription systems: pinyin, numeric, Wade-Giles, Bopomofo, Romatzyh.                     | `word` |
+| `hsk_classifier_for`     | Find the measure word(s) for a noun.                                                                             | `word` |
+| `hsk_convert_characters` | Convert between simplified and traditional characters. Returns both scripts with pinyin and meanings.            | `word` |
 
 ### Search & filter (paginated)
 
-| Tool | Description | Input |
-|------|-------------|-------|
-| `hsk_search_meaning` | Full-text search by English meaning, ranked by relevance. | `query`, `cursor?` |
-| `hsk_words_by_radical` | Find all words sharing a radical, ordered by frequency. | `radical`, `cursor?` |
-| `hsk_polyphones` | List characters with multiple pronunciations (多音字). | `cursor?` |
-| `hsk_homophone_drill` | Find words sharing the same pinyin (homophones). Accepts tone marks, numbers, or plain ASCII. | `pinyin`, `cursor?` |
+| Tool                   | Description                                                                                   | Input                |
+| ---------------------- | --------------------------------------------------------------------------------------------- | -------------------- |
+| `hsk_search_meaning`   | Full-text search by English meaning, ranked by relevance.                                     | `query`, `cursor?`   |
+| `hsk_words_by_radical` | Find all words sharing a radical, ordered by frequency.                                       | `radical`, `cursor?` |
+| `hsk_polyphones`       | List characters with multiple pronunciations (多音字).                                        | `cursor?`            |
+| `hsk_homophone_drill`  | Find words sharing the same pinyin (homophones). Accepts tone marks, numbers, or plain ASCII. | `pinyin`, `cursor?`  |
 
 ### Study tools (paginated)
 
-| Tool | Description | Input |
-|------|-------------|-------|
-| `hsk_build_study_set` | Build a study set for a level, ordered by frequency. | `level`, `scheme?`, `cursor?` |
+| Tool                     | Description                                                    | Input                                    |
+| ------------------------ | -------------------------------------------------------------- | ---------------------------------------- |
+| `hsk_build_study_set`    | Build a study set for a level, ordered by frequency.           | `level`, `scheme?`, `cursor?`            |
 | `hsk_suggest_next_words` | Suggest next words to learn, excluding words you already know. | `level`, `scheme?`, `known[]`, `cursor?` |
 
 ### Comparison
 
-| Tool | Description | Input |
-|------|-------------|-------|
-| `hsk_compare_words` | Compare 2-5 words side by side (frequency, levels, meanings, radicals). | `words[]` |
-| `hsk_diff` | Compare two HSK levels to see vocabulary overlap and differences. | `level_a`, `scheme_a?`, `level_b`, `scheme_b?` |
+| Tool                | Description                                                             | Input                                          |
+| ------------------- | ----------------------------------------------------------------------- | ---------------------------------------------- |
+| `hsk_compare_words` | Compare 2-5 words side by side (frequency, levels, meanings, radicals). | `words[]`                                      |
+| `hsk_diff`          | Compare two HSK levels to see vocabulary overlap and differences.       | `level_a`, `scheme_a?`, `level_b`, `scheme_b?` |
 
 **Notes:**
+
 - `scheme` is `"new"` (HSK 3.0, levels 1-7) or `"old"` (HSK 2.0, levels 1-6). Defaults to `"new"`.
 - Paginated tools return 20 results per page with a `next_cursor` for fetching more.
 - All meanings are in English.
@@ -126,10 +135,10 @@ Once connected, just talk to your AI assistant naturally. The assistant will cal
 
 The server also exposes MCP resources — read-only data the client can fetch:
 
-| URI | Description |
-|-----|-------------|
-| `hsk://meta` | Server metadata: dataset version, tool count, headword/form counts |
-| `hsk://level/1` through `hsk://level/7` | Full vocabulary list for each HSK 3.0 level |
+| URI                                     | Description                                                        |
+| --------------------------------------- | ------------------------------------------------------------------ |
+| `hsk://meta`                            | Server metadata: dataset version, tool count, headword/form counts |
+| `hsk://level/1` through `hsk://level/7` | Full vocabulary list for each HSK 3.0 level                        |
 
 ## Data coverage
 
@@ -208,31 +217,31 @@ Same approach as pinyin. The source column is `hanzi_concat` — simplified and 
 
 The `forms` table has several columns that look redundant but serve different roles:
 
-| Column | Example | Purpose |
-|--------|---------|---------|
-| `pinyin` | `ā yí` | Display — returned in responses |
-| `pinyin_plain` | `a yi` | Indexed exact match — for short pinyin queries |
-| `pinyin_concat` | `ayi` | FTS trigram source — space-free for substring search |
-| `meanings_json` | `["maternal aunt",...]` | Display — structured array for responses |
-| `gloss_en` | `maternal aunt \| ...` | FTS unicode61 source — flat text for word search |
-| `hanzi_concat` | `阿姨 阿姨` | FTS trigram source — simplified + traditional together |
+| Column          | Example                 | Purpose                                                |
+| --------------- | ----------------------- | ------------------------------------------------------ |
+| `pinyin`        | `ā yí`                  | Display — returned in responses                        |
+| `pinyin_plain`  | `a yi`                  | Indexed exact match — for short pinyin queries         |
+| `pinyin_concat` | `ayi`                   | FTS trigram source — space-free for substring search   |
+| `meanings_json` | `["maternal aunt",...]` | Display — structured array for responses               |
+| `gloss_en`      | `maternal aunt \| ...`  | FTS unicode61 source — flat text for word search       |
+| `hanzi_concat`  | `阿姨 阿姨`             | FTS trigram source — simplified + traditional together |
 
 FTS tables store their own copy of the indexed text alongside the search index. The actual structured data (meanings array, full pinyin, etc.) stays in `forms`; FTS queries JOIN back via `rowid`.
 
 ## Tech stack
 
-| Component | Technology |
-|-----------|-----------|
-| Runtime | [Cloudflare Workers](https://workers.cloudflare.com) |
-| Database | [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQLite at the edge) |
-| Protocol | [MCP](https://modelcontextprotocol.io) via Streamable HTTP |
-| MCP SDK | [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk) + [agents](https://www.npmjs.com/package/agents) |
-| Language | TypeScript |
-| Validation | [Zod](https://zod.dev) |
-| Testing | [Vitest](https://vitest.dev) |
-| Linting | [Biome](https://biomejs.dev) |
-| CI | GitHub Actions (typecheck + test on PRs) |
-| Deploy | Cloudflare Git integration (auto-deploy on push) |
+| Component  | Technology                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Runtime    | [Cloudflare Workers](https://workers.cloudflare.com)                                                                                  |
+| Database   | [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQLite at the edge)                                                           |
+| Protocol   | [MCP](https://modelcontextprotocol.io) via Streamable HTTP                                                                            |
+| MCP SDK    | [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk) + [agents](https://www.npmjs.com/package/agents) |
+| Language   | TypeScript                                                                                                                            |
+| Validation | [Zod](https://zod.dev)                                                                                                                |
+| Testing    | [Vitest](https://vitest.dev)                                                                                                          |
+| Linting    | [Biome](https://biomejs.dev)                                                                                                          |
+| CI         | GitHub Actions (typecheck + test on PRs)                                                                                              |
+| Deploy     | Cloudflare Git integration (auto-deploy on push)                                                                                      |
 
 ## Development
 
