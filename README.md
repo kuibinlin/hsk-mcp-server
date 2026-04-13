@@ -138,12 +138,30 @@ Once connected, just talk to your AI assistant naturally. The assistant will cal
 
 ## Resources
 
-The server also exposes MCP resources — read-only data the client can fetch:
+The server also exposes MCP resources — read-only data the client can fetch directly without calling a tool:
 
 | URI                                     | Description                                                        |
 | --------------------------------------- | ------------------------------------------------------------------ |
 | `hsk://meta`                            | Server metadata: dataset version, tool count, headword/form counts |
 | `hsk://level/1` through `hsk://level/7` | Full vocabulary list for each HSK 3.0 level                        |
+
+**How to use resources:** MCP clients can read these URIs to get bulk data. Unlike tools (which the AI calls on your behalf), resources are fetched as context. For example:
+
+- `hsk://meta` — useful for checking the dataset version and total word count
+- `hsk://level/3` — returns the full HSK 3 vocabulary (953 words) with pinyin and meanings, which the AI can use as reference material for a study session
+
+Resources return brief word data (simplified, pinyin, meanings, HSK levels). For full details on a specific word (part of speech, transcriptions, frequency rank, classifiers), use the tools instead.
+
+## Prompts
+
+The server provides pre-built prompts — guided interaction patterns that MCP clients can offer to users:
+
+| Prompt | Description | Input |
+| --- | --- | --- |
+| `hsk-study-session` | Start a guided HSK study session. Builds a study set for your level, lets you exclude words you already know, and presents vocabulary as a structured table. | `level` |
+| `hsk-word-deep-dive` | Get comprehensive details about a Chinese word: all transcription systems, frequency rank, part of speech, classifiers, and homophones. | `word` |
+
+In clients that support prompts (like Claude Desktop), these appear as selectable templates. Pick one, fill in the input, and the AI runs through a structured workflow using the right tools automatically.
 
 ## Data coverage
 
