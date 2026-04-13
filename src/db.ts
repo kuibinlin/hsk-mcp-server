@@ -53,14 +53,31 @@ export function headwordBySimplified(
 
 // ── Batch lookups ────────────────────────────────────────────────────
 
+const BATCH_SIZE = 500;
+
+/** Split an array into chunks of at most `size` elements. */
+function chunk<T>(arr: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+}
+
 export async function headwordsByIds(db: D1Database, ids: number[]): Promise<HeadwordRow[]> {
   if (ids.length === 0) return [];
-  const ph = ids.map(() => "?").join(",");
-  const { results } = await db
-    .prepare(`SELECT * FROM headwords WHERE id IN (${ph})`)
-    .bind(...ids)
-    .all<HeadwordRow>();
-  return results;
+  const batches = chunk(ids, BATCH_SIZE);
+  const all = await Promise.all(
+    batches.map(async (batch) => {
+      const ph = batch.map(() => "?").join(",");
+      const { results } = await db
+        .prepare(`SELECT * FROM headwords WHERE id IN (${ph})`)
+        .bind(...batch)
+        .all<HeadwordRow>();
+      return results;
+    }),
+  );
+  return all.flat();
 }
 
 export async function formsByHeadwordId(db: D1Database, headwordId: number): Promise<FormRow[]> {
@@ -73,12 +90,20 @@ export async function formsByHeadwordId(db: D1Database, headwordId: number): Pro
 
 export async function formsByHeadwordIds(db: D1Database, ids: number[]): Promise<FormRow[]> {
   if (ids.length === 0) return [];
-  const ph = ids.map(() => "?").join(",");
-  const { results } = await db
-    .prepare(`SELECT * FROM forms WHERE headword_id IN (${ph}) ORDER BY headword_id, form_index`)
-    .bind(...ids)
-    .all<FormRow>();
-  return results;
+  const batches = chunk(ids, BATCH_SIZE);
+  const all = await Promise.all(
+    batches.map(async (batch) => {
+      const ph = batch.map(() => "?").join(",");
+      const { results } = await db
+        .prepare(
+          `SELECT * FROM forms WHERE headword_id IN (${ph}) ORDER BY headword_id, form_index`,
+        )
+        .bind(...batch)
+        .all<FormRow>();
+      return results;
+    }),
+  );
+  return all.flat();
 }
 
 // ── Lookup via forms table ───────────────────────────────────────────
