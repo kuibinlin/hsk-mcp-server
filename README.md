@@ -1,6 +1,6 @@
 # HSK MCP Server
 
-A remote [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that gives AI assistants structured access to the complete HSK Chinese vocabulary dataset. It exposes 12 tools and 8 resources covering word lookup, transcription conversion, frequency analysis, study set generation, and more.
+A remote [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that gives AI assistants structured access to the complete HSK Chinese vocabulary dataset. It exposes 13 tools and 8 resources covering word lookup, transcription conversion, frequency analysis, study set generation, and more.
 
 **11,470 headwords / 12,623 pronunciation forms / HSK 1-7 (new 3.0) + HSK 1-6 (old 2.0)**
 
@@ -42,7 +42,7 @@ Restart Claude Desktop after saving. The HSK tools will be available in all conv
 claude mcp add hsk --transport http https://hsk-mcp.linsnotes.com/mcp
 ```
 
-This registers the server in `~/.claude.json`. Every new Claude Code session will connect to it and have access to all 12 tools. To remove it later: `claude mcp remove hsk`.
+This registers the server in `~/.claude.json`. Every new Claude Code session will connect to it and have access to all 13 tools. To remove it later: `claude mcp remove hsk`.
 
 ### Cursor
 
@@ -92,6 +92,7 @@ Once connected, just talk to your AI assistant naturally. The assistant will cal
 | `hsk_frequency_rank` | Get frequency ranking and rarity class for a word (1 = most common). | `word` |
 | `hsk_convert_script` | Show a word in all 5 transcription systems: pinyin, numeric, Wade-Giles, Bopomofo, Romatzyh. | `word` |
 | `hsk_classifier_for` | Find the measure word(s) for a noun. | `word` |
+| `hsk_convert_characters` | Convert between simplified and traditional characters. Returns both scripts with pinyin and meanings. | `word` |
 
 ### Search & filter (paginated)
 
@@ -158,7 +159,7 @@ MCP Client (Claude, Cursor, etc.)
 |  | CORS    | Rate limit|  |
 |  +---------+-----------+  |
 |  | MCP Protocol Handler |  |
-|  |  - 12 tools          |  |
+|  |  - 13 tools          |  |
 |  |  - 8 resources       |  |
 |  +----------+-----------+  |
 |             |              |

@@ -12,7 +12,7 @@ export function registerMeta(server: McpServer, db: D1Database, env: Env): void 
 
       const data = {
         dataset_version: env.DATASET_VERSION,
-        tool_count: 12,
+        tool_count: 13,
         headword_count: headwordCount,
         form_count: formCount,
       };

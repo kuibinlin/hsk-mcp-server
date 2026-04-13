@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { register as buildStudySet } from "./buildStudySet.js";
 import { register as classifierFor } from "./classifierFor.js";
 import { register as compareWords } from "./compareWords.js";
+import { register as convertCharacters } from "./convertCharacters.js";
 import { register as convertScript } from "./convertScript.js";
 import { register as frequencyRank } from "./frequencyRank.js";
 import { register as homophoneDrill } from "./homophoneDrill.js";
@@ -18,6 +19,7 @@ export function registerTools(server: McpServer, db: D1Database, cursorSecret: s
   frequencyRank(server, db);
   convertScript(server, db);
   classifierFor(server, db);
+  convertCharacters(server, db);
 
   // Search/filter tools (paginated)
   searchMeaning(server, db, cursorSecret);
