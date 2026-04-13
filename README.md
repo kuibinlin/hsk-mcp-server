@@ -32,12 +32,14 @@ Add to your `claude_desktop_config.json`:
 
 ```json
 {
+  ...
   "mcpServers": {
     "hsk": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://hsk-mcp.linsnotes.com/mcp"]
     }
   }
+  ...
 }
 ```
 
