@@ -12,9 +12,17 @@ When you connect this server to Claude (or any MCP client), the AI can look up C
 
 ## Connecting to the server
 
+The MCP endpoint URL is:
+
+```
+https://hsk-mcp.linsnotes.com/mcp
+```
+
+No API key or authentication is required. The server is publicly accessible and free to use.
+
 ### Claude Desktop
 
-Add to your `claude_desktop_config.json`:
+Add to your `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
 {
@@ -26,21 +34,38 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
+Restart Claude Desktop after saving. The HSK tools will be available in all conversations.
+
 ### Claude Code (CLI)
 
 ```bash
 claude mcp add hsk --transport streamable-http https://hsk-mcp.linsnotes.com/mcp
 ```
 
-### Cursor / Windsurf / other MCP clients
+This registers the server in `~/.claude.json`. Every new Claude Code session will connect to it and have access to all 12 tools. To remove it later: `claude mcp remove hsk`.
 
-Use the Streamable HTTP transport with URL:
+### Cursor
 
+Settings → MCP → Add new MCP server:
+- **Name:** `hsk`
+- **Type:** Streamable HTTP
+- **URL:** `https://hsk-mcp.linsnotes.com/mcp`
+
+### Other MCP clients
+
+Use the Streamable HTTP transport with the URL above. No headers or auth required.
+
+### Verify the server is running
+
+```bash
+# Health check
+curl https://hsk-mcp.linsnotes.com/healthz
+# → {"ok":true}
+
+# MCP discovery
+curl https://hsk-mcp.linsnotes.com/.well-known/mcp.json
+# → {"name":"hsk-mcp","description":"...","url":"https://hsk-mcp.linsnotes.com/mcp",...}
 ```
-https://hsk-mcp.linsnotes.com/mcp
-```
-
-No API key or authentication is required. The server is publicly accessible and free to use.
 
 ## What you can ask
 
