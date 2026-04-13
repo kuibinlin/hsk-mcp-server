@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { READONLY } from "../annotations.js";
-import { formsByHeadwordIds, headwordsByLevel } from "../db.js";
+import { formsByLevel, headwordsByLevel } from "../db.js";
 import { jsonResult } from "../response.js";
 import { groupFormsByHeadword, shapeWordBrief } from "../shape.js";
 
@@ -29,9 +29,11 @@ export function register(server: McpServer, db: D1Database): void {
       annotations: READONLY,
     },
     async ({ level_a, scheme_a, level_b, scheme_b }) => {
-      const [hwsA, hwsB] = await Promise.all([
+      const [hwsA, hwsB, formsA, formsB] = await Promise.all([
         headwordsByLevel(db, scheme_a, level_a),
         headwordsByLevel(db, scheme_b, level_b),
+        formsByLevel(db, scheme_a, level_a),
+        formsByLevel(db, scheme_b, level_b),
       ]);
 
       const setA = new Set(hwsA.map((h) => h.id));
@@ -41,10 +43,9 @@ export function register(server: McpServer, db: D1Database): void {
       const onlyB = hwsB.filter((h) => !setA.has(h.id));
       const both = hwsA.filter((h) => setB.has(h.id));
 
-      // Batch-fetch forms for all headwords in one query
-      const allIds = [...onlyA, ...onlyB, ...both].map((h) => h.id);
-      const allForms = await formsByHeadwordIds(db, allIds);
-      const grouped = groupFormsByHeadword(allForms);
+      // Merge forms from both levels, deduplicate by form id
+      const allFormsMap = new Map([...formsA, ...formsB].map((f) => [f.id, f]));
+      const grouped = groupFormsByHeadword([...allFormsMap.values()]);
 
       const brief = (hws: typeof hwsA) =>
         hws.map((h) => shapeWordBrief(h, grouped.get(h.id) ?? []));

@@ -1,5 +1,5 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { formsByHeadwordIds, headwordsByLevel } from "../db.js";
+import { formsByLevel, headwordsByLevel } from "../db.js";
 import { groupFormsByHeadword, shapeWordBrief } from "../shape.js";
 
 export function registerLevelLists(server: McpServer, db: D1Database): void {
@@ -11,9 +11,10 @@ export function registerLevelLists(server: McpServer, db: D1Database): void {
         description: `HSK 3.0 level ${level} vocabulary list (brief format, ordered by frequency).`,
       },
       async () => {
-        const hws = await headwordsByLevel(db, "new", level);
-        const ids = hws.map((h) => h.id);
-        const forms = await formsByHeadwordIds(db, ids);
+        const [hws, forms] = await Promise.all([
+          headwordsByLevel(db, "new", level),
+          formsByLevel(db, "new", level),
+        ]);
         const grouped = groupFormsByHeadword(forms);
         const words = hws.map((h) => shapeWordBrief(h, grouped.get(h.id) ?? []));
 

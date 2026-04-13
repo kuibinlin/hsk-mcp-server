@@ -53,7 +53,8 @@ export function headwordBySimplified(
 
 // ── Batch lookups ────────────────────────────────────────────────────
 
-const BATCH_SIZE = 500;
+// D1 allows max 100 bound parameters per query.
+const BATCH_SIZE = 80;
 
 /** Split an array into chunks of at most `size` elements. */
 function chunk<T>(arr: T[], size: number): T[][] {
@@ -158,6 +159,25 @@ export async function headwordsByLevel(
     .prepare(`SELECT * FROM headwords WHERE ${col} = ? ORDER BY ${FREQ_ORDER}`)
     .bind(level)
     .all<HeadwordRow>();
+  return results;
+}
+
+/** Fetch all forms for a given HSK level via JOIN (avoids large IN clauses). */
+export async function formsByLevel(
+  db: D1Database,
+  scheme: "new" | "old",
+  level: number,
+): Promise<FormRow[]> {
+  const col = scheme === "new" ? "new_level" : "old_level";
+  const { results } = await db
+    .prepare(
+      `SELECT f.* FROM forms f
+       JOIN headwords h ON h.id = f.headword_id
+       WHERE h.${col} = ?
+       ORDER BY h.frequency_rank IS NULL, h.frequency_rank, f.form_index`,
+    )
+    .bind(level)
+    .all<FormRow>();
   return results;
 }
 
