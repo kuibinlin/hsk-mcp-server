@@ -2,7 +2,9 @@
 
 A remote [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that gives AI assistants structured access to the complete HSK Chinese vocabulary dataset. It exposes 13 tools and 8 resources covering word lookup, transcription conversion, frequency analysis, study set generation, and more.
 
-**11,470 headwords / 12,623 pronunciation forms / HSK 1-7 (new 3.0) + HSK 1-6 (old 2.0)**
+**11,470 headwords / 12,623 pronunciation forms / HSK 1-9 (new 3.0) + HSK 1-6 (old 2.0)**
+
+> HSK 3.0 has 9 levels. Levels 1-6 are individual levels; levels 7-9 are grouped as a single advanced band. In this database, levels 7-9 are stored as level 7.
 
 ## What is this?
 
@@ -132,6 +134,7 @@ Once connected, just talk to your AI assistant naturally. The assistant will cal
 
 **Notes:**
 
+- Tool names use underscores (`hsk_lookup`) instead of dot notation (`hsk.lookup`) for compatibility with Claude Desktop, which only allows `[a-zA-Z0-9_-]` in tool names.
 - `scheme` is `"new"` (HSK 3.0, levels 1-7) or `"old"` (HSK 2.0, levels 1-6). Defaults to `"new"`.
 - Paginated tools return 20 results per page with a `next_cursor` for fetching more.
 - All meanings are in English.
