@@ -12,7 +12,7 @@ import { emptyResult, jsonResult } from "../response.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk.convert_characters",
+    "hsk_convert_characters",
     {
       title: "Convert simplified ↔ traditional",
       description:

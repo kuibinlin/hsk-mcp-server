@@ -7,7 +7,7 @@ import { shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk.frequency",
+    "hsk_frequency",
     {
       title: "Frequency rank",
       description:

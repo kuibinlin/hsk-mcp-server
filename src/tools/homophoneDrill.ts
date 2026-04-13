@@ -9,7 +9,7 @@ import { shapeForm } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk.homophones",
+    "hsk_homophones",
     {
       title: "Homophone drill",
       description:

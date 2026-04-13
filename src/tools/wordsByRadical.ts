@@ -8,7 +8,7 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk.words_by_radical",
+    "hsk_words_by_radical",
     {
       title: "Words by radical",
       description:

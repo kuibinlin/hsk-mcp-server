@@ -7,7 +7,7 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk.compare",
+    "hsk_compare",
     {
       title: "Compare words",
       description:

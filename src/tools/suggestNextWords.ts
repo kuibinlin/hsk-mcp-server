@@ -8,7 +8,7 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk.suggest_next",
+    "hsk_suggest_next",
     {
       title: "Suggest next words",
       description:

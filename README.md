@@ -101,34 +101,34 @@ Once connected, just talk to your AI assistant naturally. The assistant will cal
 
 | Tool                     | Description                                                                                                      | Input  |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------- | ------ |
-| `hsk.lookup`             | Look up a word by simplified, traditional, or pinyin. Returns all forms with meanings, frequency, and HSK level. | `word` |
-| `hsk.frequency`          | Get frequency ranking and rarity class for a word (1 = most common).                                             | `word` |
-| `hsk.convert_script`     | Show a word in all 5 transcription systems: pinyin, numeric, Wade-Giles, Bopomofo, Romatzyh.                     | `word` |
-| `hsk.classifier`         | Find the measure word(s) for a noun.                                                                             | `word` |
-| `hsk.convert_characters` | Convert between simplified and traditional characters. Returns both scripts with pinyin and meanings.            | `word` |
+| `hsk_lookup`             | Look up a word by simplified, traditional, or pinyin. Returns all forms with meanings, frequency, and HSK level. | `word` |
+| `hsk_frequency`          | Get frequency ranking and rarity class for a word (1 = most common).                                             | `word` |
+| `hsk_convert_script`     | Show a word in all 5 transcription systems: pinyin, numeric, Wade-Giles, Bopomofo, Romatzyh.                     | `word` |
+| `hsk_classifier`         | Find the measure word(s) for a noun.                                                                             | `word` |
+| `hsk_convert_characters` | Convert between simplified and traditional characters. Returns both scripts with pinyin and meanings.            | `word` |
 
 ### Search & filter (paginated)
 
 | Tool                   | Description                                                                                   | Input                |
 | ---------------------- | --------------------------------------------------------------------------------------------- | -------------------- |
-| `hsk.search_meaning`   | Full-text search by English meaning, ranked by relevance.                                     | `query`, `cursor?`   |
-| `hsk.words_by_radical` | Find all words sharing a radical, ordered by frequency.                                       | `radical`, `cursor?` |
-| `hsk.polyphones`       | List characters with multiple pronunciations (多音字).                                        | `cursor?`            |
-| `hsk.homophones`       | Find words sharing the same pinyin (homophones). Accepts tone marks, numbers, or plain ASCII. | `pinyin`, `cursor?`  |
+| `hsk_search_meaning`   | Full-text search by English meaning, ranked by relevance.                                     | `query`, `cursor?`   |
+| `hsk_words_by_radical` | Find all words sharing a radical, ordered by frequency.                                       | `radical`, `cursor?` |
+| `hsk_polyphones`       | List characters with multiple pronunciations (多音字).                                        | `cursor?`            |
+| `hsk_homophones`       | Find words sharing the same pinyin (homophones). Accepts tone marks, numbers, or plain ASCII. | `pinyin`, `cursor?`  |
 
 ### Study tools (paginated)
 
 | Tool                 | Description                                                    | Input                                    |
 | -------------------- | -------------------------------------------------------------- | ---------------------------------------- |
-| `hsk.build_study_set`| Build a study set for a level, ordered by frequency.           | `level`, `scheme?`, `cursor?`            |
-| `hsk.suggest_next`   | Suggest next words to learn, excluding words you already know. | `level`, `scheme?`, `known[]`, `cursor?` |
+| `hsk_build_study_set`| Build a study set for a level, ordered by frequency.           | `level`, `scheme?`, `cursor?`            |
+| `hsk_suggest_next`   | Suggest next words to learn, excluding words you already know. | `level`, `scheme?`, `known[]`, `cursor?` |
 
 ### Comparison
 
 | Tool           | Description                                                             | Input                                          |
 | -------------- | ----------------------------------------------------------------------- | ---------------------------------------------- |
-| `hsk.compare`  | Compare 2-5 words side by side (frequency, levels, meanings, radicals). | `words[]`                                      |
-| `hsk.diff`     | Compare two HSK levels to see vocabulary overlap and differences.       | `level_a`, `scheme_a?`, `level_b`, `scheme_b?` |
+| `hsk_compare`  | Compare 2-5 words side by side (frequency, levels, meanings, radicals). | `words[]`                                      |
+| `hsk_diff`     | Compare two HSK levels to see vocabulary overlap and differences.       | `level_a`, `scheme_a?`, `level_b`, `scheme_b?` |
 
 **Notes:**
 
@@ -208,7 +208,7 @@ Three FTS5 virtual tables are needed because each searches a different kind of t
 
 **`gloss_fts`** — English meaning search, `unicode61` tokenizer (word-boundary aware)
 
-Searching `MATCH 'aunt'` correctly matches "maternal **aunt**" but not "r**aunt**ed". This powers `hsk.search_meaning`. The source column is `gloss_en` on `forms` — all meanings joined into a single flat string (`"maternal aunt | step-mother | childcare worker"`). FTS5 needs a single text column, not a JSON array, so `gloss_en` exists alongside `meanings_json` which holds the structured data for responses.
+Searching `MATCH 'aunt'` correctly matches "maternal **aunt**" but not "r**aunt**ed". This powers `hsk_search_meaning`. The source column is `gloss_en` on `forms` — all meanings joined into a single flat string (`"maternal aunt | step-mother | childcare worker"`). FTS5 needs a single text column, not a JSON array, so `gloss_en` exists alongside `meanings_json` which holds the structured data for responses.
 
 **`pinyin_fts`** — pinyin search, `trigram` tokenizer (substring matching)
 

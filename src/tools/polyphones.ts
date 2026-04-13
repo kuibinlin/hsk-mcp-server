@@ -8,7 +8,7 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk.polyphones",
+    "hsk_polyphones",
     {
       title: "Find polyphones",
       description:

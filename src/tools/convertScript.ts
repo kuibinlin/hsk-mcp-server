@@ -9,7 +9,7 @@ type System = (typeof SYSTEMS)[number];
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk.convert_script",
+    "hsk_convert_script",
     {
       title: "Convert transcription",
       description:

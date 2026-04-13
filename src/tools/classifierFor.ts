@@ -6,7 +6,7 @@ import { emptyResult, jsonResult } from "../response.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk.classifier",
+    "hsk_classifier",
     {
       title: "Classifier for word",
       description:

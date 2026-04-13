@@ -8,7 +8,7 @@ import { groupFormsByHeadword, shapeWord } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk.build_study_set",
+    "hsk_build_study_set",
     {
       title: "Build study set",
       description:

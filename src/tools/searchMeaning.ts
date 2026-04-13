@@ -8,7 +8,7 @@ import { shapeForm } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database, secret: string): void {
   server.registerTool(
-    "hsk.search_meaning",
+    "hsk_search_meaning",
     {
       title: "Search by English meaning",
       description:

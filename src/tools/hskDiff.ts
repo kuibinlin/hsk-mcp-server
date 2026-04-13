@@ -7,7 +7,7 @@ import { groupFormsByHeadword, shapeWordBrief } from "../shape.js";
 
 export function register(server: McpServer, db: D1Database): void {
   server.registerTool(
-    "hsk.diff",
+    "hsk_diff",
     {
       title: "Compare HSK levels",
       description:
