@@ -22,9 +22,20 @@ https://hsk-mcp.linsnotes.com/mcp
 
 No API key or authentication is required. The server is publicly accessible and free to use.
 
-### Claude Desktop
+### Claude Desktop (Custom Connector — recommended)
 
-Add to your `claude_desktop_config.json`:
+The easiest way is to add it as a custom connector directly in the Claude Desktop UI:
+
+1. Open `Settings` from the sidebar, then go to the `Connectors` tab.
+2. Click `Add custom connector`.
+3. Fill in:
+   - **Name:** `HSK`
+   - **Remote MCP server URL:** `https://hsk-mcp.linsnotes.com/mcp`
+4. Save. The HSK tools become available in all new conversations.
+
+### Claude Desktop (config file)
+
+Alternatively, add to your `claude_desktop_config.json`:
 
 - Open Developer Settings: Click your `profile` in the sidebar, select `Settings`, then go to the `Developer` tab.
 - Edit Config: Click the `Edit Config` button to open your `claude_desktop_config.json` file.
